@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # 清单驱动的静态站点生成器。读取 build/pages.json + build/articles/<slug>.md，
 # 输出到仓库根目录（GitHub Pages 直接服务）。新增文章只需改 pages.json + 加 md。
-import os, re, json, html, markdown
+import os, re, json, html, markdown, datetime
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)            # 仓库根 = build 的上一级
@@ -104,9 +104,10 @@ for p in PAGES:
 import shutil
 shutil.copyfile(os.path.join(HERE, "style.css"), os.path.join(ROOT, "style.css"))
 # sitemap / robots / nojekyll
+today = datetime.date.today().isoformat()
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
-    sm += f'  <url><loc>{u}</loc><changefreq>weekly</changefreq><priority>{"1.0" if u.rstrip("/")==BASE else "0.8"}</priority></url>\n'
+    sm += f'  <url><loc>{u}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>{"1.0" if u.rstrip("/")==BASE else "0.8"}</priority></url>\n'
 sm += "</urlset>\n"
 open(os.path.join(ROOT, "sitemap.xml"), "w").write(sm)
 open(os.path.join(ROOT, "robots.txt"), "w").write(f"User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n")

@@ -51,6 +51,12 @@
       "nav": "免翻墙直连Claude",
       "title": "免翻墙国内直连Claude API教程·3步上手 | KingFlow",
       "desc": "2026 新手版：不用梯子在国内直连 Claude API，3 步完成 KingFlow 注册与配置，含对比表与 Python/cURL 代码，claude-opus-4-8 即调即用。"
+    },
+    {
+      "slug": "cursor-claude-api",
+      "nav": "Cursor接入教程",
+      "title": "Cursor接入Claude/GPT中转API实战教程（国内可用）| KingFlow",
+      "desc": "手把手教你在 Cursor 里 Override Base URL 接入 KingFlow 中转 API，国内直连 Claude/GPT，倍率透明、后台可对账，附代码示例与选型建议。"
     }
   ]
 }

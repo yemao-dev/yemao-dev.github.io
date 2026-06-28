@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>Claude Code接入国内中转API实战·倍率透明 | KingFlow</title>
+<meta name="description" content="Claude Code 官方 API 太贵？设置 ANTHROPIC_BASE_URL 接入 KingFlow 中转，国内直连、倍率透明、后台可查 token 用量与余额，注册送额度先测后充。">
+<link rel="canonical" href="https://yemao-dev.github.io/claude-code-proxy/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude Code接入国内中转API实战·倍率透明 | KingFlow">
+<meta property="og:description" content="Claude Code 官方 API 太贵？设置 ANTHROPIC_BASE_URL 接入 KingFlow 中转，国内直连、倍率透明、后台可查 token 用量与余额，注册送额度先测后充。">
+<meta property="og:url" content="https://yemao-dev.github.io/claude-code-proxy/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 中转站</a>
+<a href="/claude-code-max/">Claude Code 月卡</a>
+<a href="/claude-proxy/">Claude API 代理</a>
+<a href="/ai-proxy/">AI 聚合中转</a>
+<a href="/codex-api/">Codex 配置教程</a>
+<a href="/ai-api-china-guide/">中转站完整指南</a>
+<a href="/claude-china-direct/">免翻墙直连Claude</a>
+<a href="/cursor-claude-api/">Cursor接入教程</a>
+<a href="/token-pricing-guide/">Token计费实战</a>
+<a href="/claude-code-proxy/" class="active">Claude Code接入</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude Code 接入国内中转 API 实战：倍率透明、后台可查</h1>
+<div align="center">
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/端点-/v1-1E90FF" alt="Endpoint"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/模型-Claude%20%7C%20GPT-7B68EE" alt="Models"></a>
+</div>
+
+<p>用 Claude Code 写了几个月代码，最大的体会不是它有多聪明，而是 token 烧得是真的快。每天开两三个 session，让它读项目、改逻辑、跑测试，月底一看账单经常被吓一跳。后来折腾出一套自己用着舒服的方案，端点换成 KingFlow（https://www.kingflow.ai），把成本压下来还顺手把账算清楚了。这篇就讲怎么接、怎么配、怎么对账，全是实操。</p>
+<h2>一、官方 API 跑 Claude Code，痛在哪</h2>
+<p>先说为什么不直接用官方。不是说官方不好，是几个现实问题：</p>
+<p><strong>太贵。</strong> Claude Code 是个吃 token 的猛兽。它干活前会把相关文件、目录结构、历史对话一股脑塞进上下文，一次复杂任务输入轻松上十万 token。旗舰模型按官方价跑，一天下来几美元很正常，重度使用一个月上百刀也不稀奇。</p>
+<p><strong>token 烧得快还不知不觉。</strong> 你以为只是让它改个函数，它默默读了二十个文件做上下文。等你反应过来，额度已经掉了一大截。Claude Code 默认不在终端实时滚动显示「这一步花了多少钱」，烧钱过程基本是黑盒。</p>
+<p><strong>账单不好算。</strong> 官方账单是按整体用量出的，你很难拆清楚到底是哪个项目、哪个时段、哪种模型花的钱。团队几个人共用一个 key 时更乱，谁也说不清这个月为什么超了。</p>
+<p>这三个问题叠加，结果就是「能用，但心里没底」。我要的是用着省心、花钱明白。</p>
+<h2>二、KingFlow 的解法：倍率透明 + 国内直连</h2>
+<p>KingFlow 是个 API 中转，核心解决两件事——<strong>价格看得见，连接连得上</strong>。</p>
+<p><strong>倍率透明，后台全程可查。</strong> KingFlow 按倍率计费，GPT 系 0.1 倍率起、Claude 0.6 倍率，具体价格登录后台一眼能看到。更关键的是后台把每一次请求都记下来：调用日志、剩余余额、每次消耗的 token 用量，全都列得清清楚楚。我现在每天收工前扫一眼日志，今天哪个 session 是大头、哪条命令意外吃了几万 token，一目了然。这点比官方那种「月底给你一个总数」舒服太多。</p>
+<p><strong>国内直连，不用折腾梯子。</strong> 端点是 https://www.kingflow.ai/v1，国内网络直接连得上，不用为了让 Claude Code 跑起来在终端里挂一堆代理。延迟稳定，跑长任务不容易中途断。</p>
+<p>对比一下就清楚了：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>官方 API 直连</th>
+<th>KingFlow 中转</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>国内访问</td>
+<td>需自备稳定网络环境</td>
+<td>直连 https://www.kingflow.ai/v1</td>
+</tr>
+<tr>
+<td>计费方式</td>
+<td>官方原价</td>
+<td>倍率计费，Claude 0.6 / GPT 0.1 起</td>
+</tr>
+<tr>
+<td>token 用量可见</td>
+<td>黑盒，月底汇总</td>
+<td>后台逐条日志，实时可查</td>
+</tr>
+<tr>
+<td>余额查询</td>
+<td>较粗略</td>
+<td>后台实时余额</td>
+</tr>
+<tr>
+<td>上手门槛</td>
+<td>改环境变量</td>
+<td>同样改两个环境变量</td>
+</tr>
+<tr>
+<td>先试后买</td>
+<td>无</td>
+<td>注册送额度，可先测</td>
+</tr>
+</tbody>
+</table>
+<h2>三、Claude Code 配置实战：跑通第一条命令</h2>
+<p>接入只动两个环境变量，不用改 Claude Code 任何源码。</p>
+<p>Claude Code 认 <code>ANTHROPIC_BASE_URL</code> 和 <code>ANTHROPIC_AUTH_TOKEN</code> 这两个变量。前者指向 KingFlow 端点，后者填你在 KingFlow 后台拿到的 key。</p>
+<p>macOS / Linux，写进 <code>~/.zshrc</code> 或 <code>~/.bashrc</code>：</p>
+<pre><code class="language-bash">export ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai/v1&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;你的-KingFlow-key&quot;
+</code></pre>
+<p>存盘后 <code>source ~/.zshrc</code> 让它生效。Windows 用 PowerShell：</p>
+<pre><code class="language-powershell">setx ANTHROPIC_BASE_URL &quot;https://www.kingflow.ai/v1&quot;
+setx ANTHROPIC_AUTH_TOKEN &quot;你的-KingFlow-key&quot;
+</code></pre>
+<p>设完重开一个终端，让变量加载进来。然后跑通第一条命令验证：</p>
+<pre><code class="language-bash">cd 你的项目目录
+claude &quot;用一句话总结这个项目是做什么的&quot;
+</code></pre>
+<p>正常的话，Claude Code 会读项目、回一句总结。这时切回 KingFlow 后台看日志，应该刚好多出一条调用记录，带着这次的 token 用量和扣费。能对上，就说明链路完全通了。</p>
+<p>懒得改全局环境变量的话，也可以临时只在当前 session 生效：</p>
+<pre><code class="language-bash">ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai/v1&quot; \
+ANTHROPIC_AUTH_TOKEN=&quot;你的-KingFlow-key&quot; \
+claude &quot;帮我重构 utils 里的日期处理函数&quot;
+</code></pre>
+<p>想用 cURL 单独验端点活没活，也行：</p>
+<pre><code class="language-bash">curl https://www.kingflow.ai/v1/messages \
+  -H &quot;x-api-key: 你的-KingFlow-key&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;content-type: application/json&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-haiku-4-5&quot;,
+    &quot;max_tokens&quot;: 64,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;ping&quot;}]
+  }'
+</code></pre>
+<p>返回正常 JSON，端点就是通的。</p>
+<h2>四、成本可控：先测后充，后台对账</h2>
+<p>新号注册一般送测试额度，强烈建议别一上来就充钱。先用送的额度跑几次你<strong>真实的日常任务</strong>——读个中型项目、改一段复杂逻辑、让它跑一轮测试。把速度、稳定性、扣费都摸一遍，价格和体验都满意了再充。</p>
+<p>充值后我的对账习惯就两步：每次干完一段活，回后台看日志；每周做一次小复盘，看这周钱主要花在什么类型的任务上。几次下来你会很清楚哪些操作性价比高、哪些纯属浪费 token，慢慢就把用法优化出来了。这种「花钱明白」的感觉，是黑盒账单给不了的。</p>
+<h2>五、模型怎么选：贵的留给难活</h2>
+<p>KingFlow 上 Claude 几个型号都在，关键是按任务匹配，别一律上最贵的：</p>
+<ul>
+<li><strong>claude-opus-4-8（旗舰）</strong>——写复杂逻辑、大规模重构、架构设计、啃陌生代码库这种真需要脑子的活，用它。贵但值，关键时刻能省下你大量来回调试的时间。</li>
+<li><strong>claude-sonnet-4-6（均衡）</strong>——日常写功能、改中等复杂度的代码，能力和成本平衡得不错，可以当默认主力。</li>
+<li><strong>claude-haiku-4-5（高频/低成本）</strong>——跑高频小任务首选：批量改命名、生成样板代码、写简单单测、格式化整理、快速问答。便宜量大，闭眼用。</li>
+</ul>
+<p>我自己的搭配是 haiku 兜底高频琐事、sonnet 干主力、opus 专啃硬骨头。Claude Code 里随时可以切模型，养成习惯后单位时间产出的「每块钱价值」明显高一截。</p>
+<h2>六、生产业务请留备用方案</h2>
+<p>最后一句要紧的话：<strong>中转适合个人开发、日常写码、跑实验，生产业务千万自己留备用方案。</strong></p>
+<p>任何第三方中转都有它的依赖链，网络、上游、额度任何一环出问题都可能影响调用。个人折腾代码无所谓，但如果你把它接进了线上服务的关键路径，一定要有降级策略——比如保留官方直连作为 fallback、设好超时和重试、对关键调用做监控告警。把它当成「省钱提效的好工具」，而不是「唯一不能倒的依赖」，心态和架构就都对了。</p>
+<h2>七、FAQ</h2>
+<p><strong>Q1：接入 KingFlow 需要改 Claude Code 的代码吗？</strong>
+不用。只配 <code>ANTHROPIC_BASE_URL=https://www.kingflow.ai/v1</code> 和 <code>ANTHROPIC_AUTH_TOKEN</code> 两个环境变量，Claude Code 本身一行不动。</p>
+<p><strong>Q2：怎么知道每次到底花了多少 token？</strong>
+登录 KingFlow 后台看日志，每一次调用都有独立记录，带 token 用量和扣费，余额也实时显示。这正是它相比官方黑盒账单的优势。</p>
+<p><strong>Q3：倍率具体怎么算，价格在哪看？</strong>
+按倍率计费，Claude 0.6 倍率、GPT 0.1 倍率起，最终单价以后台展示为准。建议先用注册送的额度跑几次真实任务，自己算一笔再决定充多少。</p>
+<p><strong>Q4：国内网络能直接跑通吗？</strong>
+端点 https://www.kingflow.ai/v1 面向国内直连，正常网络下不用额外挂代理就能让 Claude Code 跑起来。若首条命令没通，先检查环境变量是否拼对、终端是否重开加载了变量。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

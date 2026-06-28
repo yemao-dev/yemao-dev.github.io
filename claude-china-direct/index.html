@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>免翻墙国内直连Claude API教程·3步上手 | KingFlow</title>
+<meta name="description" content="2026 新手版：不用梯子在国内直连 Claude API，3 步完成 KingFlow 注册与配置，含对比表与 Python/cURL 代码，claude-opus-4-8 即调即用。">
+<link rel="canonical" href="https://yemao-dev.github.io/claude-china-direct/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="免翻墙国内直连Claude API教程·3步上手 | KingFlow">
+<meta property="og:description" content="2026 新手版：不用梯子在国内直连 Claude API，3 步完成 KingFlow 注册与配置，含对比表与 Python/cURL 代码，claude-opus-4-8 即调即用。">
+<meta property="og:url" content="https://yemao-dev.github.io/claude-china-direct/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 中转站</a>
+<a href="/claude-code-max/">Claude Code 月卡</a>
+<a href="/claude-proxy/">Claude API 代理</a>
+<a href="/ai-proxy/">AI 聚合中转</a>
+<a href="/codex-api/">Codex 配置教程</a>
+<a href="/ai-api-china-guide/">中转站完整指南</a>
+<a href="/claude-china-direct/" class="active">免翻墙直连Claude</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>免翻墙国内直连 Claude API 教程：3 步上手（2026 新手版）</h1>
+<div align="center">
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+<a href="https://www.kingflow.ai/v1"><img src="https://img.shields.io/badge/端点-/v1-2EA043" alt="API Endpoint"></a>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/兼容-OpenAI%20SDK-1F6FEB" alt="OpenAI Compatible"></a>
+</div>
+
+<hr />
+<p>很多刚入门的同学想用 Claude 写代码、做翻译、跑 Agent，结果第一步就卡住：官方 API 在国内根本连不上，注册又总是被封，最后连充值都过不去。我自己折腾了大半年，踩坑无数，这篇就把最稳的一条路写清楚——<strong>免翻墙、国内直连、不用海外信用卡</strong>，照着做三步就能跑通。全程用 KingFlow（https://www.kingflow.ai）做中转，目前是我团队日常在用的方案。</p>
+<h2>一、为什么新手需要"免翻墙 + 国内直连"</h2>
+<p>别急着抄代码，先搞清楚官方 API 到底卡在哪。新手最常被这三件事劝退：</p>
+<p><strong>1. 网络问题（被墙）。</strong> Anthropic 官方端点在国内是直接访问不了的，必须挂代理或 VPN。问题是代理本身不稳，跑长任务动不动断流，超时报错；而且很多公司内网、服务器上根本不让挂梯子，部署上线就是噩梦。</p>
+<p><strong>2. 封号风险。</strong> 这是最伤的。官方对国内用户的注册和调用行为审查很严：用了共享 IP、注册资料不"地道"、调用频率稍微高一点，账号说封就封，余额一起冻结，申诉基本石沉大海。新手前期试错多，最容易中招。</p>
+<p><strong>3. 支付和配额。</strong> 官方按美元计费，要绑海外信用卡，国内的卡大概率刷不过；新账号还有配额限制，想加额度又得走一堆验证。光是充值这一关，就能把一半人挡在门外。</p>
+<p>国内直连中转的思路很简单：把这三道坎都搬走。你只跟一个国内可直连的端点打交道，免梯子、人民币充值、按量计费，账号风险由服务方统一兜底。</p>
+<h2>二、KingFlow vs 官方 API 对比</h2>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>KingFlow（国内直连）</th>
+<th>官方 API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>网络要求</td>
+<td>免翻墙，国内直接访问</td>
+<td>必须翻墙，代理不稳</td>
+</tr>
+<tr>
+<td>封号风险</td>
+<td>独立 IP 池，合规转发，不封号</td>
+<td>高风险，触发即封号冻结</td>
+</tr>
+<tr>
+<td>响应速度</td>
+<td>全球节点就近接入，毫秒级延迟，99.9% 可用</td>
+<td>受代理质量拖累，波动大</td>
+</tr>
+<tr>
+<td>模型覆盖</td>
+<td>100+，Claude / GPT / Gemini / 国产大模型全包</td>
+<td>仅自家模型</td>
+</tr>
+<tr>
+<td>支付方式</td>
+<td>人民币充值，无需海外信用卡</td>
+<td>美元，需海外信用卡</td>
+</tr>
+<tr>
+<td>计价</td>
+<td>比官方低 30%–50%，按量结算</td>
+<td>原价</td>
+</tr>
+<tr>
+<td>接入成本</td>
+<td>改一行 Base URL，OpenAI SDK 直接复用</td>
+<td>需额外维护代理链路</td>
+</tr>
+</tbody>
+</table>
+<p>对新手来说，最值钱的两点：<strong>不用翻墙</strong>和<strong>不会动不动封号</strong>。这两件事一旦解决，你才能把精力花在真正写程序上，而不是天天和网络、账号搏斗。</p>
+<h2>三、3 步上手教程</h2>
+<h3>步骤 1：注册账号</h3>
+<p>打开 https://www.kingflow.ai，用邮箱或手机号注册即可，<strong>不需要海外信用卡</strong>。注册完进控制台先充一点点余额（几块钱就够测试），KingFlow 是按量计费，跑多少扣多少，不会强制套餐。</p>
+<h3>步骤 2：创建 API Key，选国内直连节点</h3>
+<p>在控制台找到「API 密钥 / Keys」，点新建，生成一串 <code>sk-</code> 开头的密钥。<strong>复制下来妥善保存</strong>，它只在创建时完整显示一次。</p>
+<p>创建时注意选择<strong>国内直连节点（中国大陆 / 就近线路）</strong>，这一步就是免翻墙的关键——选对节点后，国内服务器和本机都能直接访问，不用任何代理。</p>
+<h3>步骤 3：改 base_url，跑通第一个请求</h3>
+<p>KingFlow 完全兼容 OpenAI 的接口格式，所以你只要把官方 SDK 的两处改掉：<strong>base_url 指向 KingFlow 的 <code>/v1</code> 端点，api_key 换成你刚才的密钥</strong>。其余代码一行都不用动。</p>
+<p>先装 SDK：</p>
+<pre><code class="language-bash">pip install openai
+</code></pre>
+<p>Python 示例（注意模型名用当前在售的 <code>claude-opus-4-8</code>，旧的 <code>claude-3-opus-20240229</code> 已经过时，别再用）：</p>
+<pre><code class="language-python">from openai import OpenAI
+
+client = OpenAI(
+    base_url=&quot;https://www.kingflow.ai/v1&quot;,   # 国内直连端点
+    api_key=&quot;你的KingFlow密钥&quot;,                # sk- 开头
+)
+
+resp = client.chat.completions.create(
+    model=&quot;claude-opus-4-8&quot;,                  # 旗舰，最强推理与代码能力
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;用一句话介绍你自己&quot;}
+    ],
+)
+
+print(resp.choices[0].message.content)
+</code></pre>
+<p>习惯命令行的话，cURL 一条搞定：</p>
+<pre><code class="language-bash">curl https://www.kingflow.ai/v1/chat/completions \
+  -H &quot;Authorization: Bearer 你的KingFlow密钥&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-opus-4-8&quot;,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;你好&quot;}]
+  }'
+</code></pre>
+<p>能打印出回复，就说明整条链路通了。接下来无论是接到自己的项目、跑批量任务，还是塞进各种 Agent 框架，逻辑全都一样——<strong>改一行 Base URL，所有原本写给 OpenAI 的代码都能直接复用</strong>。</p>
+<p>如果你用的是 Claude 原生（Anthropic）SDK，那就配 <code>ANTHROPIC_BASE_URL=https://www.kingflow.ai</code> 和 <code>ANTHROPIC_AUTH_TOKEN=你的密钥</code>，两种姿势都支持，挑顺手的用。</p>
+<h2>四、"不封号"背后的技术</h2>
+<p>新手最关心一句话：凭什么这么用账号不会被封？说穿了不玄乎：</p>
+<ul>
+<li><strong>独立 IP 池</strong>：请求从干净、稳定的独立出口发出，不和一堆陌生人挤共享 IP，从源头避开"异常 IP"这条最常见的封号触发线。</li>
+<li><strong>企业级合规转发</strong>：每个请求都经过正规授权通道转发，调用行为规范，不存在频繁切 IP、伪造资料这类高危操作。</li>
+</ul>
+<p>把这些官方最容易判定为"风险"的因素全部规避掉，自然就稳了。对你而言不用懂细节，只要知道：账号和合规这摊事服务方替你扛了，你专心写业务就行。</p>
+<h2>五、支持的模型一览</h2>
+<p>KingFlow 同一个密钥、同一个端点，覆盖 100+ 主流模型，常用的几款：</p>
+<ul>
+<li><strong>claude-opus-4-8</strong>：旗舰款，复杂推理、长文、写代码首选。</li>
+<li><strong>claude-sonnet-4-6</strong>：均衡款，速度和效果兼顾，日常对话/中等任务性价比最高。</li>
+<li><strong>claude-haiku-4-5</strong>：高频低成本款，适合大批量、对延迟敏感的轻量调用。</li>
+<li><strong>GPT 系</strong>：gpt-5.5 / gpt-5.4 等。</li>
+<li><strong>其他</strong>：Gemini、文心、通义、DeepSeek 等国产与海外模型一应俱全。</li>
+</ul>
+<p>切换模型只改 <code>model</code> 字段的字符串，代码不用重写——想对比哪个模型更适合你的场景，几秒钟就能切一次试。</p>
+<h2>六、常见问题 FAQ</h2>
+<p><strong>Q1：真的完全不用翻墙吗？</strong>
+是的。注册、充值、调用全程在国内直接完成，前提是步骤 2 里选了国内直连节点。本机、国内云服务器都能跑，部署上线不用再为梯子发愁。</p>
+<p><strong>Q2：我之前写的 OpenAI 代码要大改吗？</strong>
+基本不用。OpenAI SDK 只改 <code>base_url</code> 和 <code>api_key</code> 两处；用 Claude 原生 SDK 就改两个环境变量。业务逻辑、消息格式一律保持原样。</p>
+<p><strong>Q3：旧教程里的 claude-3-opus-20240229 还能用吗？</strong>
+那是过时的旧模型名，已不建议使用。现在统一用 <code>claude-opus-4-8</code>（旗舰）、<code>claude-sonnet-4-6</code>（均衡）、<code>claude-haiku-4-5</code>（轻量），按需求选。</p>
+<p><strong>Q4：计费怎么算，会不会偷扣？</strong>
+按 token 用量实时结算，跑多少扣多少，无月费、无强制套餐。控制台能看到每次调用的明细，心里有数，先充几块钱测试完全没压力。</p>
+<hr />
+<p>照这三步走，从零到第一个 Claude 请求跑通，新手大概十几分钟就能搞定。把网络、封号、支付这三座大山交给 KingFlow（https://www.kingflow.ai），剩下的精力，留给真正想做的东西。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

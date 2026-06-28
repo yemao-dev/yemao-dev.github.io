@@ -45,6 +45,12 @@
       "nav": "中转站完整指南",
       "title": "2026国内AI API中转站接入完整指南 | KingFlow",
       "desc": "国内直连 Claude/GPT/Gemini API 中转站完整指南：选型9条铁律、注册到跑通、Python/cURL 代码示例，一个 KingFlow Key 调用全模型。"
+    },
+    {
+      "slug": "claude-china-direct",
+      "nav": "免翻墙直连Claude",
+      "title": "免翻墙国内直连Claude API教程·3步上手 | KingFlow",
+      "desc": "2026 新手版：不用梯子在国内直连 Claude API，3 步完成 KingFlow 注册与配置，含对比表与 Python/cURL 代码，claude-opus-4-8 即调即用。"
     }
   ]
 }

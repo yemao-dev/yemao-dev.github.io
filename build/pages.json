@@ -111,6 +111,12 @@
       "nav": "客户端接入推荐",
       "title": "Claude中转站+桌面客户端接入推荐 | KingFlow",
       "desc": "不写代码也能用 Claude：ChatBox、Cherry Studio、NextChat 等桌面客户端接入 KingFlow 中转的通用原理与逐个配置步骤，一个 Key 多模型。"
+    },
+    {
+      "slug": "claude-proxy-team",
+      "nav": "团队使用经验",
+      "title": "团队用Claude中转站经验·分账对账与发票 | KingFlow",
+      "desc": "团队接 Claude API 怎么算账：每人独立子 Key、后台按 Key 看用量拆成本、月度对账导出、增值税发票与对公、子 Key 限额防超支，团队选 KingFlow。"
     }
   ]
 }

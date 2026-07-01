@@ -69,6 +69,12 @@
       "nav": "Claude Code接入",
       "title": "Claude Code接入国内中转API实战·倍率透明 | KingFlow",
       "desc": "Claude Code 官方 API 太贵？设置 ANTHROPIC_BASE_URL 接入 KingFlow 中转，国内直连、倍率透明、后台可查 token 用量与余额，注册送额度先测后充。"
+    },
+    {
+      "slug": "claude-code-china-setup",
+      "nav": "Claude Code国内配置",
+      "title": "Claude Code国内配置实录·settings.json一步接入 | KingFlow",
+      "desc": "国内怎么用 Claude Code？改一个 ~/.claude/settings.json 接入 KingFlow 中转直连，含 ANTHROPIC_BASE_URL 完整配置、Prompt Cache 透传验证、TTFT 与汇率对比。"
     }
   ]
 }

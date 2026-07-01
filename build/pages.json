@@ -93,6 +93,12 @@
       "nav": "中转站横评推荐",
       "title": "2026 Claude中转站推荐·横评实测后的答案 | KingFlow",
       "desc": "从官方协议、Prompt Cache 透传、TTFT、模型保真、倍率透明、发票等 8 个维度横评 Claude 中转站，讲清怎么选、为什么最终推荐 KingFlow 国内直连。"
+    },
+    {
+      "slug": "claude-proxy-pitfalls",
+      "nav": "中转站避雷指南",
+      "title": "Claude中转站避雷指南·踩过的坑与最终推荐 | KingFlow",
+      "desc": "用 Claude 中转站踩过的坑：野中转跑路、逆向接口挂、掉包降级、倍率不透明、高峰限速、不能开发票，总结成选型清单，最终推荐 KingFlow。"
     }
   ]
 }

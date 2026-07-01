@@ -99,6 +99,12 @@
       "nav": "中转站避雷指南",
       "title": "Claude中转站避雷指南·踩过的坑与最终推荐 | KingFlow",
       "desc": "用 Claude 中转站踩过的坑：野中转跑路、逆向接口挂、掉包降级、倍率不透明、高峰限速、不能开发票，总结成选型清单，最终推荐 KingFlow。"
+    },
+    {
+      "slug": "claude-proxy-stable",
+      "nav": "中转稳定性选型",
+      "title": "Claude API中转怎么选才稳定不掉线·经验 | KingFlow",
+      "desc": "Claude API 中转稳定看什么：TTFT、并发成功率、长连接、容错、协议是否逆向。讲清不稳根因与自测方法，附长任务防超时配置，稳定选 KingFlow。"
     }
   ]
 }

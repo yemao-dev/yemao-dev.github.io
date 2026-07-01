@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-site-verification" content="DyeogvFVdyZis1Eh2FSM3D7FKZ2gQSHrVDROSUnAWtQ">
+<title>Claude API中转怎么选才稳定不掉线·经验 | KingFlow</title>
+<meta name="description" content="Claude API 中转稳定看什么：TTFT、并发成功率、长连接、容错、协议是否逆向。讲清不稳根因与自测方法，附长任务防超时配置，稳定选 KingFlow。">
+<link rel="canonical" href="https://yemao-dev.github.io/claude-proxy-stable/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude API中转怎么选才稳定不掉线·经验 | KingFlow">
+<meta property="og:description" content="Claude API 中转稳定看什么：TTFT、并发成功率、长连接、容错、协议是否逆向。讲清不稳根因与自测方法，附长任务防超时配置，稳定选 KingFlow。">
+<meta property="og:url" content="https://yemao-dev.github.io/claude-proxy-stable/">
+<meta property="og:site_name" content="KingFlow">
+<meta property="og:image" content="https://www.kingflow.ai/logo.png">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">King<span>Flow</span></a>
+  <nav class="topnav"><a href="/">首页</a>
+<a href="/claude-api/">Claude 中转站</a>
+<a href="/claude-code-max/">Claude Code 月卡</a>
+<a href="/claude-proxy/">Claude API 代理</a>
+<a href="/ai-proxy/">AI 聚合中转</a>
+<a href="/codex-api/">Codex 配置教程</a>
+<a href="/ai-api-china-guide/">中转站完整指南</a>
+<a href="/claude-china-direct/">免翻墙直连Claude</a>
+<a href="/cursor-claude-api/">Cursor接入教程</a>
+<a href="/token-pricing-guide/">Token计费实战</a>
+<a href="/claude-code-proxy/">Claude Code接入</a>
+<a href="/claude-code-china-setup/">Claude Code国内配置</a>
+<a href="/codex-bridge-setup/">Codex桥接配置</a>
+<a href="/claude-code-compliance/">Claude Code合规使用</a>
+<a href="/claude-proxy-review/">中转站横评推荐</a>
+<a href="/claude-proxy-pitfalls/">中转站避雷指南</a>
+<a href="/claude-proxy-stable/" class="active">中转稳定性选型</a></nav>
+  <a class="cta" href="https://www.kingflow.ai" rel="noopener">前往官网 →</a>
+</header>
+<main>
+<article class="post">
+<h1>Claude API 中转怎么选才稳定不掉线：长期使用经验</h1>
+<div align="center">
+<h3>KingFlow · 国内直连 AI API 中转</h3>
+<a href="https://www.kingflow.ai"><img src="https://img.shields.io/badge/官网-www.kingflow.ai-FF6B35" alt="KingFlow"></a>
+</div>
+
+<p>用中转接 Claude 已经有一段时间了，从最早自己挂代理直连，到试过好几家中转小站，再到现在稳定跑在 KingFlow 上。这中间踩的坑基本都跟"稳定性"有关——不是模型不行，是链路不行。今天不聊便宜不便宜，专门把"稳"这件事拆开讲清楚：稳定到底看哪几个指标、不稳的根子在哪、怎么自己测一家稳不稳、以及长任务怎么配置才不会中途断。</p>
+<h2>一、"稳定"到底看哪些指标</h2>
+<p>很多人评估中转只看两样：价格和有没有 claude-opus-4-8。这远远不够。真正决定你日常体验的是下面这几个:</p>
+<ul>
+<li><strong>TTFT（首字延迟）</strong>：从发请求到吐出第一个字的时间。这个数直接决定你写代码时"卡不卡"。国内节点的中转通常能压到 1-3 秒；如果链路绕到美国节点，我实测过能飙到 40-50 秒，日本节点也要 15-25 秒，那种体验基本没法连续干活。</li>
+<li><strong>并发成功率</strong>：同时开好几个会话、或者 Claude Code 并行跑几个子任务时，有多少请求能正常返回而不是超时/限流。稳的中转在高峰期也能保持高成功率，差的一上量就 429。</li>
+<li><strong>长连接不断</strong>：流式输出一跑就是几分钟甚至十几分钟，中途连接被掐掉就前功尽弃。稳定性很大程度上就是"长连接能不能扛住"。</li>
+<li><strong>容错兜底</strong>：某个模型上游临时抽风时，能不能自动切换或重试，而不是直接甩你一个 500。</li>
+<li><strong>协议不逆向</strong>：这是最容易被忽略但最关键的一条。走官方 <code>/v1/messages</code> 协议的中转，Anthropic 那边更新了也不容易挂；靠逆向某些客户端接口的，官方一动就集体趴窝。</li>
+</ul>
+<p>把这五条列成表，跟官方直连、自己挂代理对比一下就很清楚:</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>官方直连（挂代理）</th>
+<th>自建 VPS 代理</th>
+<th>稳定中转（如 KingFlow）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TTFT 首字延迟</td>
+<td>受代理链路影响，波动大</td>
+<td>看 VPS 出口，常偏高</td>
+<td>国内节点，通常 1-3 秒</td>
+</tr>
+<tr>
+<td>并发成功率</td>
+<td>账号风控随时冻结</td>
+<td>IP 被识别就集体 429</td>
+<td>后台可查，高峰仍稳</td>
+</tr>
+<tr>
+<td>长连接</td>
+<td>易被中间链路掐断</td>
+<td>三五分钟被识别断流</td>
+<td>官方协议长连接稳</td>
+</tr>
+<tr>
+<td>容错兜底</td>
+<td>无，报错就报错</td>
+<td>无</td>
+<td>上游抽风自动切换重试</td>
+</tr>
+<tr>
+<td>协议</td>
+<td>官方</td>
+<td>官方</td>
+<td>官方 /v1/messages，不逆向</td>
+</tr>
+</tbody>
+</table>
+<h2>二、不稳定的常见根因</h2>
+<p>用得久了，掉线基本逃不出这几个原因:</p>
+<p><strong>1. 逆向接口。</strong> 有些便宜中转不是走官方 API，而是逆向反代某些桌面客户端的私有接口。平时能用，但只要 Anthropic 一更新协议或者封了那条路，整家就集体掉线，而且你完全不知道什么时候恢复。这是最坑的一类，出问题你连自查都无从下手。</p>
+<p><strong>2. 机场/代理 IP 被封。</strong> 自己挂机场或 VPS 直连官方的，最典型的现象就是：前几分钟好好的，一跑长连接或者高频请求，IP 特征被识别，接着就是连发 403/429，掉线频繁。共享 IP 的机场尤其严重，别人触发风控你跟着遭殃。</p>
+<p><strong>3. 高峰限速。</strong> 晚上用的人一多，没做好容量规划的中转 TTFT 直接飙高，并发一上来就超时。你以为是自己网络问题，其实是上游被限流了。</p>
+<p><strong>4. 无容错直接 500。</strong> 上游某个模型临时不可用时，健壮的服务会重试或切到备用链路，不健壮的直接把 500 甩给你。长任务跑到一半吃个 500，等于白干。</p>
+<h2>三、怎么自测一家稳不稳</h2>
+<p>别听宣传，自己测。方法很简单，不用写复杂脚本：</p>
+<p><strong>小额压测。</strong> 先用送的额度或小额充值，别急着大额进去。用 cURL 连发几个请求，观察 TTFT 和返回是否稳定:</p>
+<pre><code class="language-bash">curl https://www.kingflow.ai/v1/messages \
+  -H &quot;x-api-key: $ANTHROPIC_AUTH_TOKEN&quot; \
+  -H &quot;anthropic-version: 2023-06-01&quot; \
+  -H &quot;content-type: application/json&quot; \
+  -d '{
+    &quot;model&quot;: &quot;claude-sonnet-4-6&quot;,
+    &quot;max_tokens&quot;: 1024,
+    &quot;stream&quot;: true,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;写一个快速排序并解释&quot;}]
+  }'
+</code></pre>
+<p><strong>连发观察。</strong> 用一个循环连着打十几二十次，看有没有间歇性的超时、403、429。稳的服务这一轮下来应该全 200，成功率不掉。再挑晚上高峰时段重复一遍，对比 TTFT 有没有明显恶化。</p>
+<p><strong>看有没有状态/用量后台。</strong> 这一条能筛掉一大半野中转。正规运营的会有后台，能查调用日志、余额、token 用量、每次调用的模型和倍率明细。能对账 = 出问题时你能自查、能追溯；连后台都没有的，出了事你就是两眼一抹黑，只能等它自己好。KingFlow 这块是有完整后台的，我平时对账、看用量都靠它。</p>
+<h2>四、KingFlow 为什么稳</h2>
+<p>用下来我这边比较稳的原因，大致是这几点（按我自己的理解，具体以官网/后台为准）：</p>
+<ul>
+<li><strong>走官方 <code>/v1/messages</code> 协议</strong>，不是逆向反代。这意味着 Anthropic 那边协议更新，链路不容易跟着挂，这是长期稳定的地基。</li>
+<li><strong>国内节点，低 TTFT。</strong> 不用自己挂代理，国内直连，首字延迟通常在 1-3 秒这个量级，写代码那种"刚发就开始吐"的手感回来了。</li>
+<li><strong>后台可查。</strong> 日志、余额、用量、调用明细都能看，倍率透明，对账不用猜。这本身也是稳定性的一部分——可观测才好排障。</li>
+<li><strong>容错切换。</strong> 上游某个模型临时不可用时有兜底，不至于直接把 500 甩给你。</li>
+<li><strong>一个 Key 多模型。</strong> claude-opus-4-8 做大重构、claude-sonnet-4-6 日常均衡、claude-haiku-4-5 跑高频低成本任务，改 <code>model</code> 参数就切，不用维护多套 Key，链路也就少一层出错的可能。</li>
+</ul>
+<p>Claude Code 接入只要改两个环境变量:</p>
+<pre><code class="language-bash">export ANTHROPIC_BASE_URL=&quot;https://www.kingflow.ai&quot;
+export ANTHROPIC_AUTH_TOKEN=&quot;你的_Key&quot;
+</code></pre>
+<h2>五、长任务防超时配置</h2>
+<p>这一节是重点，很多人"掉线"其实是客户端自己超时断的，跟中转没关系。Claude Code 跑大重构、长上下文任务时，默认超时可能不够，一超时就中断。在 <code>settings.json</code> 里把 <code>API_TIMEOUT_MS</code> 调大就能解决:</p>
+<pre><code class="language-json">{
+  &quot;env&quot;: {
+    &quot;ANTHROPIC_BASE_URL&quot;: &quot;https://www.kingflow.ai&quot;,
+    &quot;ANTHROPIC_AUTH_TOKEN&quot;: &quot;你的_Key&quot;,
+    &quot;API_TIMEOUT_MS&quot;: &quot;600000&quot;
+  }
+}
+</code></pre>
+<p><code>600000</code> 是 10 分钟，跑特别长的任务可以再往上加。配合走官方协议、长连接扛得住的中转，长任务基本就不会中途断了。这里要强调：超时配置和中转稳定性是两件事，得两边都到位——客户端不早断、上游链路不掉线，才叫真的稳。</p>
+<h2>六、FAQ</h2>
+<p><strong>Q1：中转会不会比官方慢很多？</strong>
+不一定。绕美国节点的确实慢，TTFT 可能 40-50 秒；但国内节点的中转反而比你自己挂代理直连更快，我这边实测通常 1-3 秒首字。关键看节点位置，不是"中转"这个形式本身慢。</p>
+<p><strong>Q2：怎么判断有没有被掉包，拿小模型冒充大模型？</strong>
+返回体里核对 <code>model</code> 字段是不是你请求的那个。再就是凭手感：claude-opus-4-8 和 haiku 的输出质量差距很明显，长期用一眼能看出来。有后台的还能在调用明细里核对实际走的模型和倍率。</p>
+<p><strong>Q3：长连接跑到一半断了，是中转的问题吗？</strong>
+先排除客户端超时——把 <code>API_TIMEOUT_MS</code> 调大再看。如果调大后还是稳定地在某个时间点断，那多半是上游链路或代理 IP 的问题，这时候换一家走官方协议、国内直连的会明显改善。</p>
+<p><strong>Q4：新手怎么低风险试一家中转稳不稳？</strong>
+先用注册送的额度或小额充值，别一上来大额进。按第三节的方法连发压测 + 挑高峰时段复测 + 确认有可查的后台，三关都过了再考虑加量。KingFlow 支持人民币小额充值、新人注册送额度，正好适合先测后充。</p>
+<hr />
+<p>稳定这件事没有玄学，就是官方协议打底、国内节点压 TTFT、后台可观测、客户端超时配够。四条都做到，长期用下来才不会天天为掉线上火。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <p><strong>KingFlow</strong> · 国内直连、稳定低延迟的 Claude / GPT API 中转平台</p>
+  <p>官网：<a href="https://www.kingflow.ai" rel="noopener">www.kingflow.ai</a> ｜ 支持 Claude Code · OpenAI Codex · 全系 Claude / GPT 模型</p>
+  <p class="muted">© 2026 KingFlow. 本站为 KingFlow 中转方案与配置教程合集。</p>
+</footer>
+</body>
+</html>

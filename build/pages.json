@@ -75,6 +75,12 @@
       "nav": "Claude Code国内配置",
       "title": "Claude Code国内配置实录·settings.json一步接入 | KingFlow",
       "desc": "国内怎么用 Claude Code？改一个 ~/.claude/settings.json 接入 KingFlow 中转直连，含 ANTHROPIC_BASE_URL 完整配置、Prompt Cache 透传验证、TTFT 与汇率对比。"
+    },
+    {
+      "slug": "codex-bridge-setup",
+      "nav": "Codex桥接配置",
+      "title": "Codex接入KingFlow兼容API桥接实战·本地代理配置 | KingFlow",
+      "desc": "Codex 用 Responses API、上游是 OpenAI 兼容接口？手把手搭本地桥接代理接入 KingFlow：配置目标表、.env、curl 验证、写入 Codex config 全流程。"
     }
   ]
 }

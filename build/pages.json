@@ -81,6 +81,12 @@
       "nav": "Codex桥接配置",
       "title": "Codex接入KingFlow兼容API桥接实战·本地代理配置 | KingFlow",
       "desc": "Codex 用 Responses API、上游是 OpenAI 兼容接口？手把手搭本地桥接代理接入 KingFlow：配置目标表、.env、curl 验证、写入 Codex config 全流程。"
+    },
+    {
+      "slug": "claude-code-compliance",
+      "nav": "Claude Code合规使用",
+      "title": "国内合规安全使用Claude Code·中转直连vs专线怎么选 | KingFlow",
+      "desc": "国内怎样合法安全地用 Claude Code？对比 KingFlow 中转直连与国际专线两条路线，讲清会员订阅、封号风险规避与合规要点，附 settings.json 配置。"
     }
   ]
 }

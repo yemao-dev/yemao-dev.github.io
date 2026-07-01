@@ -105,6 +105,12 @@
       "nav": "中转稳定性选型",
       "title": "Claude API中转怎么选才稳定不掉线·经验 | KingFlow",
       "desc": "Claude API 中转稳定看什么：TTFT、并发成功率、长连接、容错、协议是否逆向。讲清不稳根因与自测方法，附长任务防超时配置，稳定选 KingFlow。"
+    },
+    {
+      "slug": "claude-desktop-clients",
+      "nav": "客户端接入推荐",
+      "title": "Claude中转站+桌面客户端接入推荐 | KingFlow",
+      "desc": "不写代码也能用 Claude：ChatBox、Cherry Studio、NextChat 等桌面客户端接入 KingFlow 中转的通用原理与逐个配置步骤，一个 Key 多模型。"
     }
   ]
 }

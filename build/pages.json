@@ -87,6 +87,12 @@
       "nav": "Claude Code合规使用",
       "title": "国内合规安全使用Claude Code·中转直连vs专线怎么选 | KingFlow",
       "desc": "国内怎样合法安全地用 Claude Code？对比 KingFlow 中转直连与国际专线两条路线，讲清会员订阅、封号风险规避与合规要点，附 settings.json 配置。"
+    },
+    {
+      "slug": "claude-proxy-review",
+      "nav": "中转站横评推荐",
+      "title": "2026 Claude中转站推荐·横评实测后的答案 | KingFlow",
+      "desc": "从官方协议、Prompt Cache 透传、TTFT、模型保真、倍率透明、发票等 8 个维度横评 Claude 中转站，讲清怎么选、为什么最终推荐 KingFlow 国内直连。"
     }
   ]
 }
